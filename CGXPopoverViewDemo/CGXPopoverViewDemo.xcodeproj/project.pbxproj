@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B56F34DC20D0CC12002C41C8 /* CGXPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = B56F34DB20D0CC12002C41C8 /* CGXPopoverView.m */; };
+		B56F34DF20D0E586002C41C8 /* CGXPopoverManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B56F34DE20D0E586002C41C8 /* CGXPopoverManager.m */; };
 		B59F8D5020C9208A0024CFA4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B59F8D4F20C9208A0024CFA4 /* AppDelegate.m */; };
 		B59F8D5620C9208A0024CFA4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B59F8D5420C9208A0024CFA4 /* Main.storyboard */; };
 		B59F8D5820C9208E0024CFA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B59F8D5720C9208E0024CFA4 /* Assets.xcassets */; };
@@ -27,10 +29,13 @@
 		B59F8D7F20C920D00024CFA4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B59F8D7220C920D00024CFA4 /* ViewController.m */; };
 		B59F8D8720C920FE0024CFA4 /* CGXPopovewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B59F8D8420C920FE0024CFA4 /* CGXPopovewCell.m */; };
 		B59F8D8820C920FE0024CFA4 /* CGXPopoverItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B59F8D8520C920FE0024CFA4 /* CGXPopoverItem.m */; };
-		B59F8D8920C920FE0024CFA4 /* CGXPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = B59F8D8620C920FE0024CFA4 /* CGXPopoverView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B56F34DA20D0CC12002C41C8 /* CGXPopoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGXPopoverView.h; sourceTree = "<group>"; };
+		B56F34DB20D0CC12002C41C8 /* CGXPopoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGXPopoverView.m; sourceTree = "<group>"; };
+		B56F34DD20D0E585002C41C8 /* CGXPopoverManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CGXPopoverManager.h; sourceTree = "<group>"; };
+		B56F34DE20D0E586002C41C8 /* CGXPopoverManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CGXPopoverManager.m; sourceTree = "<group>"; };
 		B59F8D4B20C9208A0024CFA4 /* CGXPopoverViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CGXPopoverViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B59F8D4E20C9208A0024CFA4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B59F8D4F20C9208A0024CFA4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -55,10 +60,8 @@
 		B59F8D7220C920D00024CFA4 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		B59F8D8120C920FE0024CFA4 /* CGXPopovewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGXPopovewCell.h; sourceTree = "<group>"; };
 		B59F8D8220C920FE0024CFA4 /* CGXPopoverItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGXPopoverItem.h; sourceTree = "<group>"; };
-		B59F8D8320C920FE0024CFA4 /* CGXPopoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGXPopoverView.h; sourceTree = "<group>"; };
 		B59F8D8420C920FE0024CFA4 /* CGXPopovewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGXPopovewCell.m; sourceTree = "<group>"; };
 		B59F8D8520C920FE0024CFA4 /* CGXPopoverItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGXPopoverItem.m; sourceTree = "<group>"; };
-		B59F8D8620C920FE0024CFA4 /* CGXPopoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGXPopoverView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,12 +131,14 @@
 		B59F8D8020C920FE0024CFA4 /* CGXPopoverView */ = {
 			isa = PBXGroup;
 			children = (
-				B59F8D8120C920FE0024CFA4 /* CGXPopovewCell.h */,
+				B56F34DA20D0CC12002C41C8 /* CGXPopoverView.h */,
+				B56F34DB20D0CC12002C41C8 /* CGXPopoverView.m */,
 				B59F8D8220C920FE0024CFA4 /* CGXPopoverItem.h */,
-				B59F8D8320C920FE0024CFA4 /* CGXPopoverView.h */,
-				B59F8D8420C920FE0024CFA4 /* CGXPopovewCell.m */,
 				B59F8D8520C920FE0024CFA4 /* CGXPopoverItem.m */,
-				B59F8D8620C920FE0024CFA4 /* CGXPopoverView.m */,
+				B56F34DD20D0E585002C41C8 /* CGXPopoverManager.h */,
+				B56F34DE20D0E586002C41C8 /* CGXPopoverManager.m */,
+				B59F8D8120C920FE0024CFA4 /* CGXPopovewCell.h */,
+				B59F8D8420C920FE0024CFA4 /* CGXPopovewCell.m */,
 			);
 			name = CGXPopoverView;
 			path = ../../CGXPopoverView;
@@ -223,8 +228,9 @@
 			files = (
 				B59F8D5E20C9208E0024CFA4 /* main.m in Sources */,
 				B59F8D8820C920FE0024CFA4 /* CGXPopoverItem.m in Sources */,
+				B56F34DF20D0E586002C41C8 /* CGXPopoverManager.m in Sources */,
 				B59F8D8720C920FE0024CFA4 /* CGXPopovewCell.m in Sources */,
-				B59F8D8920C920FE0024CFA4 /* CGXPopoverView.m in Sources */,
+				B56F34DC20D0CC12002C41C8 /* CGXPopoverView.m in Sources */,
 				B59F8D7F20C920D00024CFA4 /* ViewController.m in Sources */,
 				B59F8D5020C9208A0024CFA4 /* AppDelegate.m in Sources */,
 			);

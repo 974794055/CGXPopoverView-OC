@@ -14,8 +14,7 @@ float const CGXPopovewCellTitleLeftEdge = 8.f; ///< 标题左边边距
 
 @interface CGXPopovewCell ()
 
-@property (nonatomic, strong) UIButton *button;
-@property (nonatomic, strong) UIView *bottomLine;
+
 
 @end
 
@@ -32,19 +31,18 @@ float const CGXPopovewCellTitleLeftEdge = 8.f; ///< 标题左边边距
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     [super setHighlighted:highlighted animated:animated];
     if (highlighted) {
-        self.backgroundColor = _style == CGXPopoverItemDark ? [UIColor colorWithRed:0.90 green:0.90 blue:0.90 alpha:1.00] : [UIColor colorWithRed:0.23 green:0.23 blue:0.23 alpha:1.00];
+        self.backgroundColor = _style == CGXPopoverManagerItemDark ? [UIColor colorWithRed:0.90 green:0.90 blue:0.90 alpha:1.00] : [UIColor colorWithRed:0.23 green:0.23 blue:0.23 alpha:1.00];
     } else {
         [UIView animateWithDuration:0.3f animations:^{
             self.backgroundColor = [UIColor clearColor];
         }];
     }
 }
-
 #pragma mark - Setter
-- (void)setStyle:(CGXPopoverItemStyle)style {
+- (void)setStyle:(CGXPopoverManagerItemStyle)style {
     _style = style;
     _bottomLine.backgroundColor = [self.class bottomLineColorForStyle:style];
-    if (_style == CGXPopoverItemDefault) {
+    if (_style == CGXPopoverManagerItemDefault) {
         [_button setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
     } else {
         [_button setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -83,13 +81,15 @@ float const CGXPopovewCellTitleLeftEdge = 8.f; ///< 标题左边边距
 
 
 /*! @brief 底部线条颜色 */
-+ (UIColor *)bottomLineColorForStyle:(CGXPopoverItemStyle)style {
-    return style == CGXPopoverItemDefault ? [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.00] : [UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1.00];
++ (UIColor *)bottomLineColorForStyle:(CGXPopoverManagerItemStyle)style {
+    return style == CGXPopoverManagerItemDark ? [UIColor colorWithRed:0.75 green:0.75 blue:0.75 alpha:1.00] : [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
 }
 
 - (void)setAction:(CGXPopoverItem *)action {
-    [self.button setImage:action.image forState:UIControlStateNormal];
     [self.button setTitle:action.title forState:UIControlStateNormal];
+    if (action.image) {
+        [self.button setImage:action.image forState:UIControlStateNormal];
+    }
     if (action.titleColor) {
         [self.button setTitleColor:action.titleColor forState:UIControlStateNormal];
     }

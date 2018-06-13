@@ -7,12 +7,15 @@
 //
 
 #import "ViewController.h"
-#import "CGXPopoverView.h"
+
 #import "CGXPopoverItem.h"
 
+#import "CGXPopoverView.h"
+#import "CGXPopoverManager.h"
 @interface ViewController ()
 @property (nonatomic , strong) NSMutableArray *items;
-
+@property (nonatomic , strong) CGXPopoverManager *manager1;
+@property (nonatomic , strong) CGXPopoverManager *manager2;
 @end
 
 @implementation ViewController
@@ -21,52 +24,82 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-//    UILabel *testLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 100, [[UIScreen mainScreen] bounds].size.width, 30)];
-//    testLabel.textAlignment = NSTextAlignmentCenter;
-//      NSMutableAttributedString *AttributedStr = [[NSMutableAttributedString alloc]initWithString:@"猴年大吉,新春快乐!"];
-//      [AttributedStr addAttribute:NSFontAttributeName
-//                                  value:[UIFont systemFontOfSize:26.0]
-//                                     range:NSMakeRange(2, 2)];
-//        [AttributedStr addAttribute:NSForegroundColorAttributeName
-//                                      value:[UIColor redColor]
-//                                      range:NSMakeRange(2, 2)];
-//        [AttributedStr addAttribute:NSBackgroundColorAttributeName
-//                                     value:[UIColor redColor]
-//                                       range:NSMakeRange(7, 2)];
-//         testLabel.attributedText = AttributedStr;
-//         [self.view addSubview:testLabel];
-    
+    self.items = [NSMutableArray arrayWithArray:[self QQActions]];
 }
 
 - (NSArray<CGXPopoverItem *> *)QQActions {
-    NSArray *arr1 =    @[@"扫一扫",@"加好友",@"创建讨论组",@"发送到电脑",@"面对面快传",@"收钱"];
+    NSArray *arr1 =    @[@"扫一扫",@"加好友",@"创建讨论组创建讨论组",@"发送到电脑",@"面对面快传",@"收钱"];
     NSArray *arr2=@[@"saoyisao.png",@"jiahaoyou.png",@"taolun.png",@"diannao.png",@"diannao.png",@"shouqian.png"];
     
     NSMutableArray *actionAry = [NSMutableArray array];
     for (int i = 0; i<arr1.count; i++) {
-        CGXPopoverItem *action1 = [CGXPopoverItem actionWithImage:[UIImage imageNamed:arr2[i]] Title:arr1[i] Handler:^(CGXPopoverItem *action) {
-            NSLog(@"action:%@" , action.title);
-        }];
-        
-        [actionAry addObject:action1];
+        if (i > 0) {
+            CGXPopoverItem *action1 = [CGXPopoverItem actionWithImage:[UIImage imageNamed:arr2[i]] Title:arr1[i]];
+            [actionAry addObject:action1];
+        }else{
+            CGXPopoverItem *action1 = [CGXPopoverItem actionWithImage:[UIImage imageNamed:arr2[i]] Title:arr1[i] IsSelect:YES];
+            [actionAry addObject:action1];
+        }
     }
     return actionAry;
 }
 - (IBAction)qqq:(UIBarButtonItem *)sender {
     
-    CGXPopoverView *popoverView = [[CGXPopoverView alloc] initWithFrame:CGRectNull];
-    popoverView.style = CGXPopoverItemDefault;
-    // 在没有系统控件的情况下调用可以使用显示在指定的点坐标的方法弹出菜单控件.
-    [popoverView showToPoint:CGPointMake(self.view.frame.size.width-40, 64) withActions:[self QQActions]];
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath1"]) {
+        NSInteger row = [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath1"] integerValue];
+        self.manager1.selectIndexPath =  [NSIndexPath indexPathForRow:row inSection:0];
+    }
+    CGXPopoverView *popoverView = [[CGXPopoverView alloc] initWithFrame:CGRectNull WithManager:self.manager1];
+    
+    [popoverView showToPoint:CGPointMake(self.view.frame.size.width-40, 64) SelectItem:^(CGXPopoverItem *item, NSIndexPath *indexPath) {
+         NSLog(@"%@--action1:%@" , indexPath,item.title);
+         [[NSUserDefaults standardUserDefaults] setObject:@(indexPath.row) forKey:@"SelectindexPath1"];
+    }];
+    
 }
 - (IBAction)www:(UIButton *)sender {
-    CGXPopoverView *popoverView = [[CGXPopoverView alloc] initWithFrame:CGRectNull];
-    popoverView.arrowStyle = PopoverViewArrowStyleTriangle;
-    popoverView.showShade = YES; // 显示阴影背景
-    [popoverView showToView:sender withActions:[self QQActions]];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath1"]) {
+        NSInteger row = [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath1"] integerValue];
+        self.manager2.selectIndexPath =  [NSIndexPath indexPathForRow:row inSection:0];
+    }
+        CGXPopoverView *popoverView = [[CGXPopoverView alloc] initWithFrame:CGRectNull WithManager:self.manager2];
+    [popoverView showToView:sender SelectItem:^(CGXPopoverItem *item, NSIndexPath *indexPath) {
+        [[NSUserDefaults standardUserDefaults] setObject:@(indexPath.row) forKey:@"SelectindexPath2"];
+        NSLog(@"%@--action2:%@" , indexPath,item.title);
+    }];
+
 }
 
-
+- (CGXPopoverManager *)manager1
+{
+    if (!_manager1) {
+        _manager1 = [CGXPopoverManager new];
+//        _manager1.style = CGXPopoverManagerItemDark;
+           _manager1.style = CGXPopoverManagerItemDefault;
+        _manager1.showShade = YES;
+        _manager1.isAnimate = YES;
+        _manager1.hideAfterTouchOutside = YES;
+        _manager1.modleArray = self.items;
+        _manager1.selectIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        _manager1.arrowStyle = CGXPopoverManagerArrowStyleRound;
+    }
+    return _manager1;
+}
+- (CGXPopoverManager *)manager2
+{
+    if (!_manager2) {
+        _manager2 = [CGXPopoverManager new];
+        _manager2.style = CGXPopoverManagerItemDefault;
+        _manager2.showShade = YES;
+        _manager2.isAnimate = NO;
+        _manager2.hideAfterTouchOutside = YES;
+         _manager2.modleArray = self.items;
+        _manager2.selectIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        _manager2.arrowStyle = CGXPopoverManagerArrowStyleTriangle;
+    }
+    return _manager2;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

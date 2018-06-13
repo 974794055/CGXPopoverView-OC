@@ -13,12 +13,14 @@ static CGFloat const kPopoverViewMargin = 8.f;        ///< 边距
 static CGFloat const kCGXPopovewCellHeight = 40.f;   ///< cell指定高度
 static CGFloat const kPopoverViewArrowHeight = 13.f;  ///< 箭头高度
 
-static NSString *kPopoverCellReuseId = @"_PopoverCellReuseId";
+static NSString *CellReuseIdentifierCGXPopovew = @"CGXPopovewCell";
 
 float PopoverViewDegreesToRadians(float angle)
 {
     return angle*M_PI/180;
 }
+
+
 
 @interface CGXPopoverView () <UITableViewDelegate, UITableViewDataSource>
 
@@ -30,28 +32,59 @@ float PopoverViewDegreesToRadians(float angle)
 @property (nonatomic, weak) UITapGestureRecognizer *tapGesture; ///< 点击背景阴影的手势
 
 #pragma mark - Data
-@property (nonatomic, copy) NSArray<CGXPopoverItem *> *actions;
 @property (nonatomic, assign) CGFloat windowWidth;   ///< 窗口宽度
 @property (nonatomic, assign) CGFloat windowHeight;  ///< 窗口高度
 @property (nonatomic, assign) BOOL isUpward;         ///< 箭头指向, YES为向上, 反之为向下, 默认为YES.
 
+@property (nonatomic, copy) CGXPopoverViewSelectItemBlock selectItemBlock;
 @end
 
 @implementation CGXPopoverView
 
-#pragma mark - Lift Cycle
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame WithManager:(CGXPopoverManager *)manager
 {
-    if (!(self = [super initWithFrame:frame])) return nil;
-    [self initialize];
+    self = [super initWithFrame:frame];
+    if (self) {
+        // data
+        _isUpward = YES;
+        // keyWindow
+        _keyWindow = [UIApplication sharedApplication].keyWindow;
+        _windowWidth = CGRectGetWidth(_keyWindow.bounds);
+        _windowHeight = CGRectGetHeight(_keyWindow.bounds);
+        
+        // shadeView
+        _shadeView = [[UIView alloc] initWithFrame:_keyWindow.bounds];
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+        [_shadeView addGestureRecognizer:tapGesture];
+        _tapGesture = tapGesture;
+        
+        
+        // current view
+        self.manager = manager;
+        if (manager.style == CGXPopoverManagerItemDefault) {
+            self.backgroundColor = [UIColor whiteColor];
+        }
+        else {
+            self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
+        }
+        
+        _tapGesture.enabled = manager.hideAfterTouchOutside;
+        self.tableView.separatorColor = [CGXPopovewCell bottomLineColorForStyle:manager.style];
+        
+        _shadeView.backgroundColor = manager.showShade ? [UIColor colorWithWhite:0.f alpha:0.18f] : [UIColor clearColor];
+        if (_borderLayer) {
+            _borderLayer.strokeColor = manager.showShade ? [UIColor clearColor].CGColor : self.tableView.separatorColor.CGColor;
+        }
+        [self.tableView reloadData];
+    }
     return self;
 }
-#pragma mark - Public
-+ (instancetype)popoverView
+- (void)setManager:(CGXPopoverManager *)manager
 {
-    return [[self alloc] init];
+    _manager = manager;
+    [self.tableView reloadData];
 }
-
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -60,69 +93,6 @@ float PopoverViewDegreesToRadians(float angle)
                                   CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) - kPopoverViewArrowHeight);
 }
 
-#pragma mark - Setter
-- (void)setHideAfterTouchOutside:(BOOL)hideAfterTouchOutside
-{
-    _hideAfterTouchOutside = hideAfterTouchOutside;
-    _tapGesture.enabled = _hideAfterTouchOutside;
-}
-
-- (void)setShowShade:(BOOL)showShade
-{
-    _showShade = showShade;
-    
-    _shadeView.backgroundColor = _showShade ? [UIColor colorWithWhite:0.f alpha:0.18f] : [UIColor clearColor];
-    
-    if (_borderLayer) {
-        
-        _borderLayer.strokeColor = _showShade ? [UIColor clearColor].CGColor : _tableView.separatorColor.CGColor;
-    }
-}
-
-- (void)setStyle:(CGXPopoverItemStyle)style
-{
-    _style = style;
-    
-    _tableView.separatorColor = [CGXPopovewCell bottomLineColorForStyle:_style];
-    
-    if (_style == CGXPopoverItemDefault) {
-        
-        self.backgroundColor = [UIColor whiteColor];
-    }
-    else {
-        
-        self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
-    }
-}
-
-#pragma mark - Private
-/*! @brief 初始化相关 */
-- (void)initialize
-{
-    // data
-    _actions = @[];
-    _isUpward = YES;
-    _style = CGXPopoverItemDefault;
-    _arrowStyle = PopoverViewArrowStyleRound;
-    
-    // current view
-    self.backgroundColor = [UIColor whiteColor];
-    
-    // keyWindow
-    _keyWindow = [UIApplication sharedApplication].keyWindow;
-    _windowWidth = CGRectGetWidth(_keyWindow.bounds);
-    _windowHeight = CGRectGetHeight(_keyWindow.bounds);
-    
-    // shadeView
-    _shadeView = [[UIView alloc] initWithFrame:_keyWindow.bounds];
-    [self setShowShade:YES];
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
-    [_shadeView addGestureRecognizer:tapGesture];
-    _tapGesture = tapGesture;
-    
-    [self.tableView reloadData];
-    
-}
 - (UITableView *)tableView
 {
     if (!_tableView) {
@@ -132,11 +102,9 @@ float PopoverViewDegreesToRadians(float angle)
         _tableView.dataSource = self;
         _tableView.scrollEnabled = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        _tableView.separatorColor = [CGXPopovewCell bottomLineColorForStyle:_style];
-        _tableView.backgroundColor = [UIColor clearColor];
         _tableView.estimatedRowHeight = 0.0;
         _tableView.showsVerticalScrollIndicator = NO;
-        [_tableView registerClass:[CGXPopovewCell class] forCellReuseIdentifier:kPopoverCellReuseId];
+        [_tableView registerClass:[CGXPopovewCell class] forCellReuseIdentifier:CellReuseIdentifierCGXPopovew];
         [self addSubview:_tableView];
     }
     return _tableView;
@@ -153,7 +121,7 @@ float PopoverViewDegreesToRadians(float angle)
     CGFloat arrowBottomCornerRadius = 4.f;
     
     // 如果是菱角箭头的话, 箭头宽度需要小点.
-    if (_arrowStyle == PopoverViewArrowStyleTriangle) {
+    if (self.manager.arrowStyle == CGXPopoverManagerArrowStyleTriangle) {
         arrowWidth = 22.0;
     }
     
@@ -177,7 +145,11 @@ float PopoverViewDegreesToRadians(float angle)
     CGFloat currentH = _tableView.contentSize.height;
     
     // 如果 actions 为空则使用默认的宽高
-    if (_actions.count == 0) {
+    //    if (_actions.count == 0) {
+    //        currentW = 150.0;
+    //        currentH = 20.0;
+    //    }
+    if (self.manager.modleArray.count == 0) {
         currentW = 150.0;
         currentH = 20.0;
     }
@@ -191,7 +163,7 @@ float PopoverViewDegreesToRadians(float angle)
         currentH = maxHeight;
         _tableView.scrollEnabled = YES;
         if (!_isUpward) { // 箭头指向下则移动到最后一行
-            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_actions.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+            [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.manager.modleArray.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         }
     }
     
@@ -228,7 +200,7 @@ float PopoverViewDegreesToRadians(float angle)
         
         [maskPath addLineToPoint:CGPointMake(arrowPoint.x - arrowWidth/2, kPopoverViewArrowHeight)];
         // 菱角箭头
-        if (_arrowStyle == PopoverViewArrowStyleTriangle) {
+        if (self.manager.arrowStyle == CGXPopoverManagerArrowStyleTriangle) {
             
             [maskPath addLineToPoint:arrowPoint];
             [maskPath addLineToPoint:CGPointMake(arrowPoint.x + arrowWidth/2, kPopoverViewArrowHeight)];
@@ -262,7 +234,7 @@ float PopoverViewDegreesToRadians(float angle)
         
         [maskPath addLineToPoint:CGPointMake(arrowPoint.x + arrowWidth/2, currentH - kPopoverViewArrowHeight)];
         // 菱角箭头
-        if (_arrowStyle == PopoverViewArrowStyleTriangle) {
+        if (self.manager.arrowStyle == CGXPopoverManagerArrowStyleTriangle) {
             
             [maskPath addLineToPoint:arrowPoint];
             [maskPath addLineToPoint:CGPointMake(arrowPoint.x - arrowWidth/2, currentH - kPopoverViewArrowHeight)];
@@ -291,7 +263,7 @@ float PopoverViewDegreesToRadians(float angle)
     maskLayer.path = maskPath.CGPath;
     self.layer.mask = maskLayer;
     // 边框 (只有在不显示半透明阴影层时才设置边框线条)
-    if (!_showShade) {
+    if (!self.manager.showShade) {
         CAShapeLayer *borderLayer = [CAShapeLayer layer];
         borderLayer.frame = self.bounds;
         borderLayer.path = maskPath.CGPath;
@@ -310,8 +282,8 @@ float PopoverViewDegreesToRadians(float angle)
     self.frame = oldFrame;
     self.transform = CGAffineTransformMakeScale(0.01f, 0.01f);
     
-    if (self.isAnimate) {
-        [UIView animateWithDuration:0.25f animations:^{
+    if (self.manager.isAnimate) {
+        [UIView animateWithDuration:self.manager.timeInterval animations:^{
             self.transform = CGAffineTransformIdentity;
             self.shadeView.alpha = 1.f;
         }];
@@ -329,7 +301,7 @@ float PopoverViewDegreesToRadians(float angle)
     CGSize imageSize = CGSizeZero;
     UIFont *titleFont = [UIFont systemFontOfSize:15];
     
-    for (CGXPopoverItem *action in _actions) {
+    for (CGXPopoverItem *action in self.manager.modleArray) {
         
         imageWidth = 0.f;
         titleLeftEdge = 0.f;
@@ -378,27 +350,12 @@ float PopoverViewDegreesToRadians(float angle)
  */
 - (void)hide
 {
-    if (self.isAnimate) {
-        [UIView animateWithDuration:0.25f animations:^{
-            self.alpha = 0.f;
-            self->_shadeView.alpha = 0.f;
-            self.transform = CGAffineTransformMakeScale(0.01f, 0.01f);
-        } completion:^(BOOL finished) {
-            [self->_shadeView removeFromSuperview];
-            [self removeFromSuperview];
-        }];
-    }else{
-        self.alpha = 0.f;
-        self.shadeView.alpha = 0.f;
-        self.transform = CGAffineTransformMakeScale(0.01f, 0.01f);
-        [self.shadeView removeFromSuperview];
-        [self removeFromSuperview];
-    }
-    
+    [self removeViewAnimation];
 }
 
 
-- (void)showToView:(UIView *)pointView withActions:(NSArray<CGXPopoverItem *> *)actions
+- (void)showToView:(UIView *)pointView
+        SelectItem:(CGXPopoverViewSelectItemBlock)selectItem
 {
     // 判断 pointView 是偏上还是偏下
     CGRect pointViewRect = [pointView.superview convertRect:pointView.frame toView:_keyWindow];
@@ -418,33 +375,25 @@ float PopoverViewDegreesToRadians(float angle)
     // 箭头指向方向
     _isUpward = pointViewUpLength <= pointViewDownLength;
     
-    if (!actions) {
-        _actions = @[];
-    } else {
-        _actions = [actions copy];
-    }
-    
     [self showToPoint:toPoint];
+    
+    self.selectItemBlock = selectItem;
 }
 
-- (void)showToPoint:(CGPoint)toPoint withActions:(NSArray<CGXPopoverItem *> *)actions
+- (void)showToPoint:(CGPoint)toPoint
+         SelectItem:(CGXPopoverViewSelectItemBlock)selectItem
 {
-    if (!actions) {
-        _actions = @[];
-    } else {
-        _actions = [actions copy];
-    }
-    
     // 计算箭头指向方向
     _isUpward = toPoint.y <= _windowHeight - toPoint.y;
     
     [self showToPoint:toPoint];
+    self.selectItemBlock = selectItem;
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _actions.count;
+    return self.manager.modleArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -454,46 +403,55 @@ float PopoverViewDegreesToRadians(float angle)
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGXPopovewCell *cell = [tableView dequeueReusableCellWithIdentifier:kPopoverCellReuseId];
-    cell.style = _style;
-    [cell setAction:_actions[indexPath.row]];
-    [cell showBottomLine: indexPath.row < _actions.count - 1];
-    
+    CGXPopovewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellReuseIdentifierCGXPopovew forIndexPath:indexPath];
+    cell.style = self.manager.style;
+    CGXPopoverItem *item = self.manager.modleArray[indexPath.row];
+    [cell setAction:item];
+    [cell showBottomLine: indexPath.row < self.manager.modleArray.count - 1];
+    if ([self.manager.selectIndexPath isEqual:indexPath]) {
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        [cell.button setTitleColor:self.manager.selectTitleColor forState:UIControlStateNormal];
+    } else{
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
     return cell;
 }
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.isAnimate) {
-        [UIView animateWithDuration:0.25f animations:^{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    CGXPopoverItem *item = self.manager.modleArray[indexPath.row];
+
+    [self removeViewAnimationAtIndexPath:indexPath Item:item IsBlcok:YES];
+}
+
+- (void)removeViewAnimation
+{
+    [self removeViewAnimationAtIndexPath:nil Item:nil IsBlcok:NO];
+}
+- (void)removeViewAnimationAtIndexPath:(NSIndexPath *)indexPath Item:(CGXPopoverItem *)item IsBlcok:(BOOL)isBlock
+{
+    if (self.manager.isAnimate) {
+        [UIView animateWithDuration:self.manager.timeInterval animations:^{
             self.alpha = 0.f;
             self.shadeView.alpha = 0.f;
+            self.transform = CGAffineTransformMakeScale(0.01f, 0.01f);
         } completion:^(BOOL finished) {
-            CGXPopoverItem *action = self.actions[indexPath.row];
-            action.handler ? action.handler(action) : NULL;
-            self.actions = nil;
+            if (isBlock) {
+               self.selectItemBlock(item,indexPath);
+            }
+
             [self.shadeView removeFromSuperview];
             [self removeFromSuperview];
         }];
     } else{
         self.alpha = 0.f;
         self.shadeView.alpha = 0.f;
-        CGXPopoverItem *action = self.actions[indexPath.row];
-        action.handler ? action.handler(action) : NULL;
-        self.actions = nil;
+        if (isBlock) {
+            self.selectItemBlock(item,indexPath);
+        }
         [self.shadeView removeFromSuperview];
         [self removeFromSuperview];
     }
-    
-    
-}
-
-- (BOOL)isAnimate
-{
-    if (!_isAnimate) {
-        _isAnimate = NO;
-    }
-    return _isAnimate;
 }
 @end
 

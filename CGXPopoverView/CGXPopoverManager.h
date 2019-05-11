@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, CGXPopoverManagerArrowStyle) {
 
 
 /**
- 动画时间。默认5秒
+ 动画选中颜色。默认5秒
  */
 @property (nonatomic, strong) UIColor *selectTitleColor;
 
@@ -59,5 +59,6 @@ typedef NS_ENUM(NSUInteger, CGXPopoverManagerArrowStyle) {
  如果要修改箭头的样式, 需要在显示先设置.
  */
 @property (nonatomic, assign) CGXPopoverManagerArrowStyle arrowStyle;
+
 
 @end

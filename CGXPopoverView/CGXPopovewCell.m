@@ -31,7 +31,7 @@ float const CGXPopovewCellTitleLeftEdge = 8.f; ///< 标题左边边距
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     [super setHighlighted:highlighted animated:animated];
     if (highlighted) {
-        self.backgroundColor = _style == CGXPopoverManagerItemDark ? [UIColor colorWithRed:0.90 green:0.90 blue:0.90 alpha:1.00] : [UIColor colorWithRed:0.23 green:0.23 blue:0.23 alpha:1.00];
+        self.backgroundColor = _style == CGXPopoverManagerItemDark ? [UIColor colorWithRed:0.23 green:0.23 blue:0.23 alpha:1.00] :  [UIColor colorWithRed:0.90 green:0.90 blue:0.90 alpha:1.00];
     } else {
         [UIView animateWithDuration:0.3f animations:^{
             self.backgroundColor = [UIColor clearColor];

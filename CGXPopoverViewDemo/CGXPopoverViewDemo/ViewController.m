@@ -8,10 +8,8 @@
 
 #import "ViewController.h"
 
-#import "CGXPopoverItem.h"
-
 #import "CGXPopoverView.h"
-#import "CGXPopoverManager.h"
+
 @interface ViewController ()
 @property (nonatomic , strong) NSMutableArray *items;
 @property (nonatomic , strong) CGXPopoverManager *manager1;
@@ -28,7 +26,7 @@
 }
 
 - (NSArray<CGXPopoverItem *> *)QQActions {
-    NSArray *arr1 =    @[@"扫一扫",@"加好友",@"创建讨论组创建讨论组",@"发送到电脑",@"面对面快传",@"收钱"];
+    NSArray *arr1 =    @[@"扫一扫",@"加好友",@"创建讨论组",@"发送到电脑",@"面对面快传",@"收钱"];
     NSArray *arr2=@[@"saoyisao.png",@"jiahaoyou.png",@"taolun.png",@"diannao.png",@"diannao.png",@"shouqian.png"];
     
     NSMutableArray *actionAry = [NSMutableArray array];
@@ -52,15 +50,15 @@
     }
     CGXPopoverView *popoverView = [[CGXPopoverView alloc] initWithFrame:CGRectNull WithManager:self.manager1];
     
-    [popoverView showToPoint:CGPointMake(self.view.frame.size.width-40, 64) SelectItem:^(CGXPopoverItem *item, NSIndexPath *indexPath) {
+    [popoverView showToPoint:CGPointMake(self.view.frame.size.width-40, 88) SelectItem:^(CGXPopoverItem *item, NSIndexPath *indexPath) {
          NSLog(@"%@--action1:%@" , indexPath,item.title);
          [[NSUserDefaults standardUserDefaults] setObject:@(indexPath.row) forKey:@"SelectindexPath1"];
     }];
     
 }
 - (IBAction)www:(UIButton *)sender {
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath1"]) {
-        NSInteger row = [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath1"] integerValue];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath2"]) {
+        NSInteger row = [[[NSUserDefaults standardUserDefaults] objectForKey:@"SelectindexPath2"] integerValue];
         self.manager2.selectIndexPath =  [NSIndexPath indexPathForRow:row inSection:0];
     }
         CGXPopoverView *popoverView = [[CGXPopoverView alloc] initWithFrame:CGRectNull WithManager:self.manager2];
@@ -75,8 +73,8 @@
 {
     if (!_manager1) {
         _manager1 = [CGXPopoverManager new];
-//        _manager1.style = CGXPopoverManagerItemDark;
-           _manager1.style = CGXPopoverManagerItemDefault;
+        _manager1.style = CGXPopoverManagerItemDark;
+//           _manager1.style = CGXPopoverManagerItemDefault;
         _manager1.showShade = YES;
         _manager1.isAnimate = YES;
         _manager1.hideAfterTouchOutside = YES;
@@ -90,6 +88,7 @@
 {
     if (!_manager2) {
         _manager2 = [CGXPopoverManager new];
+//        _manager2.style = CGXPopoverManagerItemDark;
         _manager2.style = CGXPopoverManagerItemDefault;
         _manager2.showShade = YES;
         _manager2.isAnimate = NO;

@@ -409,7 +409,7 @@ float PopoverViewDegreesToRadians(float angle)
     [cell setAction:item];
     [cell showBottomLine: indexPath.row < self.manager.modleArray.count - 1];
     if ([self.manager.selectIndexPath isEqual:indexPath]) {
-        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         [cell.button setTitleColor:self.manager.selectTitleColor forState:UIControlStateNormal];
     } else{
         cell.selectionStyle = UITableViewCellSelectionStyleNone;

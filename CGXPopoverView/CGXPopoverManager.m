@@ -17,16 +17,13 @@
     }
     return _modleArray;
 }
-//- (NSIndexPath *)selectIndexPath
-//{
-//    if (!_selectIndexPath) {
-//        _selectIndexPath = [NSIndexPath new];
-//    }
-//    return _selectIndexPath;
-//}
-- (void)setSelectIndexPath:(NSIndexPath *)selectIndexPath
+- (instancetype)init
 {
-    _selectIndexPath = selectIndexPath;
+    self = [super init];
+    if (self) {
+       _selectIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    }
+    return self;
 }
 - (BOOL)hideAfterTouchOutside
 {

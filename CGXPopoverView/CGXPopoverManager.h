@@ -2,8 +2,8 @@
 //  CGXPopoverManager.h
 //  CGXPopoverViewDemo
 //
-//  Created by 曹贵鑫 on 2018/6/13.
-//  Copyright © 2018年 曹贵鑫. All rights reserved.
+//  Created by CGX on 2018/6/13.
+//  Copyright © 2018年 CGX. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

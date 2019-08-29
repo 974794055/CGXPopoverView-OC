@@ -64,8 +64,10 @@ float PopoverViewDegreesToRadians(float angle)
         self.manager = manager;
         if (manager.style == CGXPopoverManagerItemDefault) {
             self.backgroundColor = [UIColor whiteColor];
+            self.tableView.backgroundColor = [UIColor whiteColor];
         }
         else {
+            self.tableView.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
             self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
         }
         

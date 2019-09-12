@@ -45,42 +45,55 @@ float PopoverViewDegreesToRadians(float angle)
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // data
-        _isUpward = YES;
-        // keyWindow
-        _keyWindow = [UIApplication sharedApplication].keyWindow;
-        _windowWidth = CGRectGetWidth(_keyWindow.bounds);
-        _windowHeight = CGRectGetHeight(_keyWindow.bounds);
-        
-        // shadeView
-        _shadeView = [[UIView alloc] initWithFrame:_keyWindow.bounds];
-        
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
-        [_shadeView addGestureRecognizer:tapGesture];
-        _tapGesture = tapGesture;
-        
-        
-        // current view
         self.manager = manager;
-        if (manager.style == CGXPopoverManagerItemDefault) {
-            self.backgroundColor = [UIColor whiteColor];
-            self.tableView.backgroundColor = [UIColor whiteColor];
-        }
-        else {
-            self.tableView.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
-            self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
-        }
-        
-        _tapGesture.enabled = manager.hideAfterTouchOutside;
-        self.tableView.separatorColor = [CGXPopovewCell bottomLineColorForStyle:manager.style];
-        
-        _shadeView.backgroundColor = manager.showShade ? [UIColor colorWithWhite:0.f alpha:0.18f] : [UIColor clearColor];
-        if (_borderLayer) {
-            _borderLayer.strokeColor = manager.showShade ? [UIColor clearColor].CGColor : self.tableView.separatorColor.CGColor;
-        }
-        [self.tableView reloadData];
+         [self initializeData];
     }
     return self;
+}
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self initializeData];
+    }
+    return self;
+}
+
+- (void)initializeData
+{
+    // data
+    _isUpward = YES;
+    // keyWindow
+    _keyWindow = [UIApplication sharedApplication].keyWindow;
+    _windowWidth = CGRectGetWidth(_keyWindow.bounds);
+    _windowHeight = CGRectGetHeight(_keyWindow.bounds);
+    
+    // shadeView
+    _shadeView = [[UIView alloc] initWithFrame:_keyWindow.bounds];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+    [_shadeView addGestureRecognizer:tapGesture];
+    _tapGesture = tapGesture;
+    
+    
+    // current view
+    if (self.manager.style == CGXPopoverManagerItemDefault) {
+        self.backgroundColor = [UIColor whiteColor];
+        self.tableView.backgroundColor = [UIColor whiteColor];
+    }
+    else {
+        self.tableView.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
+        self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
+    }
+    
+    _tapGesture.enabled = self.manager.hideAfterTouchOutside;
+    self.tableView.separatorColor = [CGXPopovewCell bottomLineColorForStyle:self.manager.style];
+    
+    _shadeView.backgroundColor = self.manager.showShade ? [UIColor colorWithWhite:0.f alpha:0.18f] : [UIColor clearColor];
+    if (_borderLayer) {
+        _borderLayer.strokeColor = self.manager.showShade ? [UIColor clearColor].CGColor : self.tableView.separatorColor.CGColor;
+    }
+    [self.tableView reloadData];
 }
 - (void)setManager:(CGXPopoverManager *)manager
 {
@@ -105,6 +118,8 @@ float PopoverViewDegreesToRadians(float angle)
         _tableView.scrollEnabled = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.estimatedRowHeight = 0.0;
+        _tableView.estimatedSectionFooterHeight = 0.0;
+        _tableView.estimatedSectionHeaderHeight = 0.0;
         _tableView.showsVerticalScrollIndicator = NO;
         [_tableView registerClass:[CGXPopovewCell class] forCellReuseIdentifier:CellReuseIdentifierCGXPopovew];
         [self addSubview:_tableView];
@@ -117,8 +132,8 @@ float PopoverViewDegreesToRadians(float angle)
 - (void)showToPoint:(CGPoint)toPoint
 {
     // 截取弹窗时相关数据
-    CGFloat arrowWidth = 28;
-    CGFloat cornerRadius = 6.f;
+    CGFloat arrowWidth = self.manager.cornerRadius;
+    CGFloat cornerRadius = self.manager.cornerRadius;
     CGFloat arrowCornerRadius = 2.5f;
     CGFloat arrowBottomCornerRadius = 4.f;
     

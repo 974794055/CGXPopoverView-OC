@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "CGXPopoverView"    #存储库名称
-  s.version      = "0.8"      #版本号，与tag值一致
+  s.version      = "1.0"      #版本号，与tag值一致
   s.summary      = "仿微信、QQ右侧弹框"  #简介
   s.description  = "a CGXPopoverView 仿QQ右侧弹框,自定义有无图标"  #描述
   s.homepage     = "https://github.com/974794055/CGXPopoverView-OC"      #项目主页，不是git地址

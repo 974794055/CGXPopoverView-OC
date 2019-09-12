@@ -43,6 +43,14 @@ typedef NS_ENUM(NSUInteger, CGXPopoverManagerArrowStyle) {
  */
 @property (nonatomic, assign) CGFloat timeInterval;
 
+/**
+ 指示箭头的宽 默认30
+ */
+@property (nonatomic, assign) CGFloat arrowWidth;
+/**
+ 边框圆角 默认6
+ */
+@property (nonatomic, assign) CGFloat cornerRadius;
 
 /**
  动画选中颜色。默认5秒

@@ -74,7 +74,6 @@
     if (!_manager1) {
         _manager1 = [CGXPopoverManager new];
         _manager1.style = CGXPopoverManagerItemDark;
-//           _manager1.style = CGXPopoverManagerItemDefault;
         _manager1.showShade = YES;
         _manager1.isAnimate = YES;
         _manager1.hideAfterTouchOutside = YES;
@@ -88,7 +87,6 @@
 {
     if (!_manager2) {
         _manager2 = [CGXPopoverManager new];
-//        _manager2.style = CGXPopoverManagerItemDark;
         _manager2.style = CGXPopoverManagerItemDefault;
         _manager2.showShade = YES;
         _manager2.isAnimate = NO;

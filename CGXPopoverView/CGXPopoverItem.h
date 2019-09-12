@@ -11,15 +11,16 @@
 
 
 @interface CGXPopoverItem : NSObject
-@property (nonatomic, strong,readonly) UIImage *image; ///< 图标 (建议使用 60pix*60pix 的图片)
-@property (nonatomic, copy,readonly) NSString *title; ///< 标题
+@property (nonatomic, strong) UIImage *image; ///< 图标 (建议使用 60pix*60pix 的图片)
+@property (nonatomic, copy) NSString *title; ///< 标题
 
-@property (nonatomic, copy,readonly) NSDictionary *userInfo; ///< 标题相关详情字典
-@property (nonatomic, copy, readonly) UIFont  *titleFont;
-@property (nonatomic, copy, readonly) UIColor *titleColor;
-@property (nonatomic, assign, readonly) NSTextAlignment  alignment;
+@property (nonatomic, copy) NSDictionary *userInfo; ///< 标题相关详情字典
+@property (nonatomic, copy) UIFont  *titleFont;
+@property (nonatomic, copy) UIColor *titleColor;
 
-@property (nonatomic, assign, readonly) BOOL  isSelect;// 默认选中
+@property (nonatomic, assign) NSTextAlignment  alignment;
+
+@property (nonatomic, assign) BOOL  isSelect;// 默认选中
 
 
 + (instancetype)actionWithTitle:(NSString *)title;

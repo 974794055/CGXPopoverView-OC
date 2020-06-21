@@ -22,6 +22,8 @@
     self = [super init];
     if (self) {
        _selectIndexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+        self.cornerRadius = 6;
+        self.arrowWidth = 30;
     }
     return self;
 }

@@ -9,16 +9,24 @@
 #import "CGXPopoverItem.h"
 @interface CGXPopoverItem ()
 
-@property (nonatomic, strong, readwrite) UIImage *image; ///< 图标
-@property (nonatomic, copy, readwrite) NSString *title; ///< 标题
-@property (nonatomic, copy, readwrite) NSDictionary *userInfo; ///< 标题相关详情字典
-@property (nonatomic, copy, readwrite) UIFont  *titleFont;
-@property (nonatomic, copy, readwrite) UIColor *titleColor;
-@property (nonatomic, assign, readwrite) NSTextAlignment  alignment;
-@property (nonatomic, assign, readwrite) BOOL  isSelect;// 默认选中
 @end
 
 @implementation CGXPopoverItem
+
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.titleFont = [UIFont systemFontOfSize:14];
+        self.titleColor = [UIColor blackColor];
+        
+        self.alignment = NSTextAlignmentCenter;
+        
+        self.isSelect= NO;
+    }
+    return self;
+}
 + (instancetype)actionWithTitle:(NSString *)title
 {
     return [self actionWithImage:nil Title:title];

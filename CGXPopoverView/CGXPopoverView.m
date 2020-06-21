@@ -63,11 +63,13 @@ float PopoverViewDegreesToRadians(float angle)
         // current view
         self.manager = manager;
         if (manager.style == CGXPopoverManagerItemDefault) {
-            self.backgroundColor = [UIColor whiteColor];
-        }
-        else {
-            self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
-        }
+             self.backgroundColor = [UIColor whiteColor];
+            _tableView.backgroundColor = [UIColor whiteColor];
+         }
+         else {
+             self.backgroundColor = [UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
+             _tableView.backgroundColor =[UIColor colorWithRed:0.29 green:0.29 blue:0.29 alpha:1.00];
+         }
         
         _tapGesture.enabled = manager.hideAfterTouchOutside;
         self.tableView.separatorColor = [CGXPopovewCell bottomLineColorForStyle:manager.style];
@@ -77,6 +79,8 @@ float PopoverViewDegreesToRadians(float angle)
             _borderLayer.strokeColor = manager.showShade ? [UIColor clearColor].CGColor : self.tableView.separatorColor.CGColor;
         }
         [self.tableView reloadData];
+        
+        
     }
     return self;
 }
